@@ -1,0 +1,4 @@
+include:
+  - project: $DEPLOY_REPO_NAME
+    ref: master
+    file: '/deploy-scripts-server.yml'
