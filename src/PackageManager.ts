@@ -120,12 +120,14 @@ export class PackageManager {
             const iconData = await apk.extract(resources.resolve(icon)[0].value);
 
             let desc = '';
-            for(let i of manifest.raw.children.application[0].children['meta-data']) {
-                if(i.attributes.name!=='app_desc')
-                    continue;
+            if(manifest.raw.children.application[0].children['meta-data']!==undefined) {
+                for (let i of manifest.raw.children.application[0].children['meta-data']) {
+                    if (i.attributes.name !== 'app_desc')
+                        continue;
 
-                desc = resources.resolve(i.attributes.value)[0].value;
-                break;
+                    desc = resources.resolve(i.attributes.value)[0].value;
+                    break;
+                }
             }
 
             if(desc==='' && manifest.raw.children.application[0].attributes.description!==undefined)
