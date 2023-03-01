@@ -74,7 +74,7 @@ export class PackageManager {
                 p.name,
                 p.version,
                 p.version_code.toString(10),
-                '/apk/'+p.package_id+'.apk',
+                '/apk/'+p.app_id+'-'+p.version_code.toString(10)+'.apk',
                 'icon_'+p.package_id+'.png',
                 p.description,
                 p.apk_hash,

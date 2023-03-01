@@ -28,28 +28,53 @@ export class HttpServer {
 
         this.app.use('/product.infz', express.static(PackageManager.UPDATE_FILE));
 
-        this.app.get('/apk/:file_id.apk', ((req, res) => {
-            let appFileId = parseInt(req.params.file_id ?? '', 10);
+        this.app.get('/apk/:appId/latest', async (req, res) => {
+            let appId = req.params.appId ?? '';
 
-            if(appFileId===0 || isNaN(appFileId)) {
+            if(typeof appId !== 'string' || appId==='') {
                 res.status(404).end();
                 return;
             }
 
-            res.sendFile(PackageManager.STORAGE_DIR+'/'+appFileId+'.apk', { root: '.' }, () => {
+            let pkg = await PackageModel.getByAppId(appId);
+
+            if(pkg===null) {
+                res.status(404).end();
+                return;
+            }
+
+            res.redirect('/apk/'+pkg.app_id+'-'+pkg.version_code.toString(10)+'.apk');
+        });
+
+        this.app.get('/apk/:appId-:version.apk', async (req, res) => {
+            let appId = req.params.appId ?? '';
+
+            if(typeof appId !== 'string' || appId==='') {
+                res.status(404).end();
+                return;
+            }
+
+            let pkg = await PackageModel.getByAppId(appId);
+
+            if(pkg===null) {
+                res.status(404).end();
+                return;
+            }
+
+            res.sendFile(PackageManager.STORAGE_DIR+'/'+pkg.package_id+'.apk', { root: '.' }, () => {
                 res.status(404).end();
             });
-        }));
+        });
 
-        this.app.get('/icon/:file_id.png',async (req, res) => {
-            let appFileId = parseInt(req.params.file_id ?? '', 10);
+        this.app.get('/icon/:appId.png',async (req, res) => {
+            let appId = req.params.appId ?? '';
 
-            if(appFileId===0 || isNaN(appFileId)) {
+            if(typeof appId !== 'string' || appId==='') {
                 res.status(404).end();
                 return;
             }
 
-            let pkg = await PackageModel.getById(appFileId);
+            let pkg = await PackageModel.getByAppId(appId);
 
             if(pkg===null) {
                 res.status(404).end();
@@ -71,7 +96,7 @@ export class HttpServer {
             let packages = await PackageModel.getAll();
 
             for(let p of packages) {
-                txt += '<tr><td><img src="/icon/'+p.package_id+'.png" height="24"></td><td>'+p.name+' ('+p.type+')</td><td>'+p.app_id+'</td><td>'+p.version+' ('+p.version_code.toString(10)+')</td><td>'+p.description+'</td></tr>';
+                txt += '<tr><td><img src="/icon/'+p.app_id+'.png" height="24"></td><td>'+p.name+' ('+p.type+')</td><td>'+p.app_id+'</td><td>'+p.version+' ('+p.version_code.toString(10)+')</td><td>'+p.description+'</td></tr>';
             }
 
             txt += '</table>';
