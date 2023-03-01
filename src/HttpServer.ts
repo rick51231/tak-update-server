@@ -2,6 +2,7 @@ import express from "express";
 import fileUpload from 'express-fileupload';
 import {PackageManager} from "./PackageManager";
 import {PackageModel} from "./DB/PackageModel";
+import {IPackage} from "./DB/Interfaces";
 
 const TOKEN = process.env.ACCESS_TOKEN ?? '';
 
@@ -96,7 +97,7 @@ export class HttpServer {
             let packages = await PackageModel.getAll();
 
             for(let p of packages) {
-                txt += '<tr><td><img src="/icon/'+p.app_id+'.png" height="24"></td><td>'+p.name+' ('+p.type+')</td><td>'+p.app_id+'</td><td>'+p.version+' ('+p.version_code.toString(10)+')</td><td>'+p.description+'</td></tr>';
+                txt += '<tr><td><img src="/icon/'+p.app_id+'.png" height="24"></td><td>'+p.name+' ('+p.type+')</td><td><a href="'+HttpServer.getAPKUrl(p)+'">'+p.app_id+'</a></td><td>'+p.version+' ('+p.version_code.toString(10)+')</td><td>'+p.description+'</td></tr>';
             }
 
             txt += '</table>';
@@ -120,6 +121,10 @@ export class HttpServer {
             }
             res.redirect('/manage?token='+TOKEN);
         }));
+    }
+
+    public static getAPKUrl(pkg:IPackage) : string {
+        return '/apk/'+pkg.app_id+'-'+pkg.version_code.toString(10)+'.apk';
     }
 
     public static get Instance() {

@@ -5,6 +5,7 @@ import {Apk} from "node-apk";
 import {PackageModel} from "./DB/PackageModel";
 import {PackageType} from "./Enums";
 import JSZip from 'jszip';
+import {HttpServer} from "./HttpServer";
 
 export class PackageManager {
     static STORAGE_DIR = 'data/apk';
@@ -74,7 +75,7 @@ export class PackageManager {
                 p.name,
                 p.version,
                 p.version_code.toString(10),
-                '/apk/'+p.app_id+'-'+p.version_code.toString(10)+'.apk',
+               HttpServer.getAPKUrl(p),
                 'icon_'+p.package_id+'.png',
                 p.description,
                 p.apk_hash,
