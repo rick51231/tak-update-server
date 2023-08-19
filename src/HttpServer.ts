@@ -3,6 +3,7 @@ import fileUpload from 'express-fileupload';
 import {PackageManager} from "./PackageManager";
 import {PackageModel} from "./DB/PackageModel";
 import {IPackage} from "./DB/Interfaces";
+import fs from "fs/promises";
 
 const TOKEN = process.env.ACCESS_TOKEN ?? '';
 
@@ -118,6 +119,7 @@ export class HttpServer {
 
             if(req.files!==undefined && req.files!==null && req.files.plugin!==undefined && !Array.isArray(req.files.plugin)) {
                 await PackageManager.Instance.importFile(req.files.plugin.tempFilePath);
+                await fs.unlink(req.files.plugin.tempFilePath);
             }
             res.redirect('/manage?token='+TOKEN);
         }));
