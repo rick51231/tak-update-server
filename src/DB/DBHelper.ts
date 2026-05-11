@@ -1,7 +1,7 @@
 import sqlite3 from 'sqlite3'
 import fs from 'fs/promises'
 import {Database, open} from 'sqlite'
-import {ISqlite} from "sqlite/build/interfaces";
+import {ISqlite} from "sqlite";
 
 export class DBHelper {
     static db:Database;

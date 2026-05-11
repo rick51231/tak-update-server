@@ -1,11 +1,11 @@
-FROM node:18-alpine as builder
+FROM node:25-alpine as builder
 
 WORKDIR /app
 COPY . ./
 RUN npm install
 RUN npx tsc
 
-FROM node:18-alpine
+FROM node:25-alpine
 WORKDIR /app
 COPY package*.json db.sql ./
 COPY --from=builder /app/build ./build
