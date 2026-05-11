@@ -77,7 +77,7 @@ export class PackageManager {
                 p.version_code.toString(10),
                HttpServer.getAPKUrl(p),
                 'icon_'+p.package_id+'.png',
-                p.description,
+                p.description.replaceAll(',', ';'),
                 p.apk_hash,
                 p.os_requirements,
                 p.tak_prereq,
